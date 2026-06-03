@@ -11,12 +11,22 @@ export async function POST(req: NextRequest) {
     }
 
     const hash = process.env.ADMIN_PASSWORD_HASH;
-    console.log('HASH RECIBIDO:', hash);
+
+    // DEBUG — quitar después de resolver
+    console.log('--- ADMIN LOGIN DEBUG ---');
+    console.log('password recibida (longitud):', password.length);
+    console.log('hash del env (primeros 20 chars):', hash?.slice(0, 20));
+    console.log('hash longitud total:', hash?.length);
+    console.log('hash completo:', hash);
+    console.log('-------------------------');
+
     if (!hash) {
       return NextResponse.json({ error: 'Admin no configurado' }, { status: 500 });
     }
 
     const valid = await bcrypt.compare(password, hash);
+    console.log('bcrypt.compare resultado:', valid);
+
     if (!valid) {
       return NextResponse.json({ error: 'Contraseña incorrecta' }, { status: 401 });
     }
@@ -28,7 +38,7 @@ export async function POST(req: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 8, // 8 horas
+      maxAge: 60 * 60 * 8,
       path: '/',
     });
 
