@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
     }
 
     const hash = process.env.ADMIN_PASSWORD_HASH;
+    console.log('HASH RECIBIDO:', hash);
     if (!hash) {
       return NextResponse.json({ error: 'Admin no configurado' }, { status: 500 });
     }
